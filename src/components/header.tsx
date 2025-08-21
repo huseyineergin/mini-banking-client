@@ -28,7 +28,7 @@ export default function Header() {
     <header className="w-full border-b">
       <div className="container mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         {/* Logo */}
-        <Link href="#" className="text-sm font-semibold md:text-base">
+        <Link href="/accounts" className="text-sm font-semibold md:text-base">
           <div className="text-center">
             Mini Banking
             <br />

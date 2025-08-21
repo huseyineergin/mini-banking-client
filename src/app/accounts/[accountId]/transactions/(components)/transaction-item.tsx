@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Transaction, TransactionStatus } from "@/types/transaction";
 import { ArrowLeftRight, Banknote, Calendar } from "lucide-react";
 
@@ -15,11 +16,12 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Transaction #{transaction.id}</h2>
           <span
-            className={`rounded px-2 py-1 text-xs font-semibold ${
+            className={cn(
+              "rounded px-2 py-1 text-xs font-semibold",
               transaction.status === TransactionStatus.SUCCESS
                 ? "bg-green-100 text-green-800"
                 : "bg-red-100 text-red-800"
-            }`}
+            )}
           >
             {transaction.status}
           </span>
