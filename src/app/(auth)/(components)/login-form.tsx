@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,6 +22,7 @@ const formSchema = z.object({
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,7 +36,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     startTransition(async () => {
       const res = await loginAction(values);
       if (res.success) {
-        toast.success(res.message, { position: "bottom-center", closeButton: true });
+        router.push("/accounts");
         form.reset();
       } else {
         const messages = Array.isArray(res.message) ? res.message : [res.message];
