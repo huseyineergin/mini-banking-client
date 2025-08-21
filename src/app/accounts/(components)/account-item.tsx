@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Account } from "@/types/account";
-import { Banknote, Calendar, Hash, Loader2, Trash } from "lucide-react";
+import { Banknote, Calendar, Hash, Loader2, PenLine, Trash } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteAccountAction } from "../actions";
+import { UpdateAccountForm } from "./update-account-form";
 
 type AccountItemProps = {
   account: Account;
@@ -35,11 +37,21 @@ export function AccountItem({ account }: AccountItemProps) {
           <div className="space-x-1">
             {/* <Button size="icon" variant="ghost">
               <ArrowLeftRight width={16} height={16} />
-            </Button>
-
-            <Button size="icon" variant="ghost">
-              <PenLine width={16} height={16} />
             </Button> */}
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="icon" variant="ghost">
+                  <PenLine width={16} height={16} />
+                </Button>
+              </DialogTrigger>
+
+              <DialogContent>
+                <DialogTitle className="text-center">Update Account</DialogTitle>
+
+                <UpdateAccountForm accountId={account.id} />
+              </DialogContent>
+            </Dialog>
 
             <Button size="icon" variant="ghost" onClick={handleDeleteAccount}>
               {isPending ? <Loader2 className="animate-spin" /> : <Trash width={16} height={16} />}
