@@ -21,7 +21,7 @@ export function AccountList({ accounts }: AccountListProps) {
   );
 
   return (
-    <div className="space-y-2">
+    <div className="max-h-[480px] space-y-2 overflow-y-scroll md:max-h-[640px]">
       <SearchBar value={query} onChange={setQuery} />
 
       {filteredAccounts.length > 0 ? (
