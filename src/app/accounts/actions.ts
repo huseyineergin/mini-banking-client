@@ -103,3 +103,55 @@ export async function deleteAccountAction(accountId: string): Promise<APISuccess
     } satisfies APIErrorResponse;
   }
 }
+
+export async function createAccountAction(formData: {
+  name: string;
+}): Promise<APISuccessResponse<Account> | APIErrorResponse> {
+  const cookieStore = await cookies();
+
+  const token = cookieStore.get("token");
+
+  if (!token) {
+    return {
+      success: false,
+      status: 401,
+      message: "Unauthorized.",
+    } satisfies APIErrorResponse;
+  }
+
+  try {
+    const res = await fetch(`${baseUrl}/api/accounts`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+
+    if (!res.ok) {
+      try {
+        const error: APIErrorResponse = await res.json();
+        return error;
+      } catch {
+        return {
+          success: false,
+          status: res.status,
+          message: "An unexpected error occurred.",
+        } satisfies APIErrorResponse;
+      }
+    }
+
+    const result: APISuccessResponse<Account> = await res.json();
+
+    revalidatePath("/accounts");
+
+    return result;
+  } catch {
+    return {
+      success: false,
+      status: 503,
+      message: "An unexpected error occurred.",
+    } satisfies APIErrorResponse;
+  }
+}
