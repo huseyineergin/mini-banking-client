@@ -7,6 +7,7 @@ import { Loader2, Menu } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { ThemeToggler } from "./theme-toggler";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "./ui/navigation-menu";
 
 const navLinks = [{ href: "#", label: "Accounts" }];
@@ -47,6 +48,8 @@ export default function Header() {
             ))}
           </NavigationMenuList>
 
+          <ThemeToggler />
+
           <form onSubmit={handleLogout}>
             <Button type="submit" disabled={isPending}>
               {isPending ? <Loader2 className="animate-spin" /> : "Logout"}
@@ -67,6 +70,7 @@ export default function Header() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between p-2">
                   <SheetTitle>Menu</SheetTitle>
+                  <ThemeToggler />
                 </div>
 
                 <div className="space-y-2">
