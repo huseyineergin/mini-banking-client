@@ -5,6 +5,11 @@ import { cookies } from "next/headers";
 
 const baseUrl = process.env.API_BASE_URL!;
 
+export async function logoutAction() {
+  const cookieStore = await cookies();
+  cookieStore.delete("token");
+}
+
 export async function loginAction(formData: {
   username: string;
   password: string;

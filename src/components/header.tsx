@@ -1,5 +1,6 @@
 "use client";
 
+import { logoutAction } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Loader2, Menu } from "lucide-react";
@@ -16,9 +17,9 @@ export default function Header() {
 
   function handleLogout(e: React.FormEvent) {
     startTransition(async () => {
-      // e.preventDefault();
-      // await logoutAction();
-      // router.push("/login");
+      e.preventDefault();
+      await logoutAction();
+      router.push("/login");
     });
   }
 
