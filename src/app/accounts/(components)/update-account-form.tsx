@@ -16,7 +16,7 @@ const formSchema = z.object({
   name: z.string().nonempty({ message: "Account name is required." }),
 });
 
-type UpdateAccountProps = {
+type UpdateAccountFormProps = {
   accountId: string;
 };
 
@@ -24,7 +24,7 @@ export function UpdateAccountForm({
   className,
   accountId,
   ...props
-}: React.ComponentProps<"div"> & UpdateAccountProps) {
+}: React.ComponentProps<"div"> & UpdateAccountFormProps) {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
