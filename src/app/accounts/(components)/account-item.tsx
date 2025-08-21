@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Account } from "@/types/account";
-import { Banknote, Calendar, Hash, Loader2, PenLine, Trash } from "lucide-react";
+import { ArrowLeftRight, Banknote, Calendar, Hash, Loader2, PenLine, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { deleteAccountAction } from "../actions";
@@ -16,6 +17,7 @@ type AccountItemProps = {
 
 export function AccountItem({ account }: AccountItemProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   function handleDeleteAccount() {
     startTransition(async () => {
@@ -35,9 +37,9 @@ export function AccountItem({ account }: AccountItemProps) {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Name: {account.name}</h2>
           <div className="space-x-1">
-            {/* <Button size="icon" variant="ghost">
+            <Button size="icon" variant="ghost" onClick={() => router.push(`/accounts/${account.id}/transactions`)}>
               <ArrowLeftRight width={16} height={16} />
-            </Button> */}
+            </Button>
 
             <Dialog>
               <DialogTrigger asChild>
