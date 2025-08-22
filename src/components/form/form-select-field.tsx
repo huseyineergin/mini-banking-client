@@ -26,7 +26,7 @@ export function FormSelectField({ name, control, label, placeholder = "Select", 
           <div className="grid gap-3">
             <FormLabel>{label}</FormLabel>
             <FormControl>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
