@@ -1,9 +1,10 @@
 "use server";
 
+import { ApiClient } from "@/lib/api-client";
 import { APIErrorResponse, APISuccessResponse } from "@/types/api-response";
 import { cookies } from "next/headers";
 
-const baseUrl = process.env.API_BASE_URL!;
+const apiClient = new ApiClient();
 
 export async function logoutAction() {
   const cookieStore = await cookies();
@@ -16,42 +17,17 @@ export async function loginAction(formData: {
 }): Promise<APISuccessResponse<{ token: string }> | APIErrorResponse> {
   const cookieStore = await cookies();
 
-  try {
-    const res = await fetch(`${baseUrl}/api/users/login`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: { "Content-Type": "application/json" },
-    });
+  const response = await apiClient.post<{ token: string }>("/api/users/login", formData);
 
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<{ token: string }> = await res.json();
-
-    cookieStore.set("token", result.data.token, {
+  if (response.success) {
+    cookieStore.set("token", response.data.token, {
       path: "/",
       maxAge: 60 * 60,
       sameSite: "strict",
     });
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
   }
+
+  return response;
 }
 
 export async function registerAction(formData: {
@@ -61,40 +37,15 @@ export async function registerAction(formData: {
 }): Promise<APISuccessResponse<{ token: string }> | APIErrorResponse> {
   const cookieStore = await cookies();
 
-  try {
-    const res = await fetch(`${baseUrl}/api/users/register`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: { "Content-Type": "application/json" },
-    });
+  const response = await apiClient.post<{ token: string }>("/api/users/register", formData);
 
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<{ token: string }> = await res.json();
-
-    cookieStore.set("token", result.data.token, {
+  if (response.success) {
+    cookieStore.set("token", response.data.token, {
       path: "/",
       maxAge: 60 * 60,
       sameSite: "strict",
     });
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
   }
+
+  return response;
 }

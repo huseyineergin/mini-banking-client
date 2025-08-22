@@ -30,7 +30,7 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
         <div className="flex items-center gap-2 text-sm">
           <ArrowLeftRight className="h-4 w-4" />
           <span>
-            {transaction.fromAccountNumber} → {transaction.toAccountNumber}
+            {transaction.fromAccountNumber ?? "Unknown"} → {transaction.toAccountNumber ?? "Unknown"}
           </span>
         </div>
 

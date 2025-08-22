@@ -1,11 +1,12 @@
 "use server";
 
+import { ApiClient } from "@/lib/api-client";
 import { APIErrorResponse, APISuccessResponse } from "@/types/api-response";
 import { Transaction } from "@/types/transaction";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-const baseUrl = process.env.API_BASE_URL!;
+const apiClient = new ApiClient();
 
 export async function getAccountTransactionHistoryAction(
   accountId: string
@@ -22,38 +23,9 @@ export async function getAccountTransactionHistoryAction(
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/transactions/account/${accountId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
-
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<Transaction[]> = await res.json();
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
-  }
+  return apiClient.get<Transaction[]>(`/api/transactions/account/${accountId}`, {
+    headers: { Authorization: `Bearer ${token.value}` },
+  });
 }
 
 export async function initiateMoneyTransferAction(formData: {
@@ -73,39 +45,13 @@ export async function initiateMoneyTransferAction(formData: {
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/transactions/transfer`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
+  const response = await apiClient.post<Transaction>("/api/transactions/transfer", formData, {
+    headers: { Authorization: `Bearer ${token.value}` },
+  });
 
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<Transaction> = await res.json();
-
+  if (response.success) {
     revalidatePath("/accounts");
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
   }
+
+  return response;
 }

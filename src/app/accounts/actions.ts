@@ -1,17 +1,17 @@
 "use server";
 
+import { ApiClient } from "@/lib/api-client";
 import { Account } from "@/types/account";
 import { APIErrorResponse, APISuccessResponse } from "@/types/api-response";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-const baseUrl = process.env.API_BASE_URL!;
+const apiClient = new ApiClient();
 
 export async function getAccountDetailsAction(
   accountId: string
 ): Promise<APISuccessResponse<Account> | APIErrorResponse> {
   const cookieStore = await cookies();
-
   const token = cookieStore.get("token");
 
   if (!token) {
@@ -22,38 +22,9 @@ export async function getAccountDetailsAction(
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/accounts/${accountId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
-
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<Account> = await res.json();
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
-  }
+  return apiClient.get<Account>(`/api/accounts/${accountId}`, {
+    headers: { Authorization: `Bearer ${token.value}` },
+  });
 }
 
 export async function getAccountsAction(): Promise<APISuccessResponse<Account[]> | APIErrorResponse> {
@@ -69,39 +40,13 @@ export async function getAccountsAction(): Promise<APISuccessResponse<Account[]>
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/accounts/search`, {
-      method: "POST",
-      body: JSON.stringify({}),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
-
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
+  return apiClient.post<Account[]>(
+    "/api/accounts/search",
+    {},
+    {
+      headers: { Authorization: `Bearer ${token.value}` },
     }
-
-    const result: APISuccessResponse<Account[]> = await res.json();
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
-  }
+  );
 }
 
 export async function deleteAccountAction(accountId: string): Promise<APISuccessResponse<null> | APIErrorResponse> {
@@ -117,40 +62,15 @@ export async function deleteAccountAction(accountId: string): Promise<APISuccess
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/accounts/${accountId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
+  const response = await apiClient.delete<null>(`/api/accounts/${accountId}`, {
+    headers: { Authorization: `Bearer ${token.value}` },
+  });
 
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<null> = await res.json();
-
+  if (response.success) {
     revalidatePath("/accounts");
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
   }
+
+  return response;
 }
 
 export async function createAccountAction(formData: {
@@ -168,41 +88,15 @@ export async function createAccountAction(formData: {
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/accounts`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
+  const response = await apiClient.post<Account>("/api/accounts", formData, {
+    headers: { Authorization: `Bearer ${token.value}` },
+  });
 
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<Account> = await res.json();
-
+  if (response.success) {
     revalidatePath("/accounts");
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
   }
+
+  return response;
 }
 
 export async function updateAccountAction(
@@ -223,39 +117,13 @@ export async function updateAccountAction(
     } satisfies APIErrorResponse;
   }
 
-  try {
-    const res = await fetch(`${baseUrl}/api/accounts/${accountId}`, {
-      method: "PUT",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
+  const response = await apiClient.put<Account>(`/api/accounts/${accountId}`, formData, {
+    headers: { Authorization: `Bearer ${token.value}` },
+  });
 
-    if (!res.ok) {
-      try {
-        const error: APIErrorResponse = await res.json();
-        return error;
-      } catch {
-        return {
-          success: false,
-          status: res.status,
-          message: "An unexpected error occurred.",
-        } satisfies APIErrorResponse;
-      }
-    }
-
-    const result: APISuccessResponse<Account> = await res.json();
-
+  if (response.success) {
     revalidatePath("/accounts");
-
-    return result;
-  } catch {
-    return {
-      success: false,
-      status: 503,
-      message: "An unexpected error occurred.",
-    } satisfies APIErrorResponse;
   }
+
+  return response;
 }
