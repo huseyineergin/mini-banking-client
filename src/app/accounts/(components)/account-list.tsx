@@ -4,10 +4,11 @@ import SearchBar from "@/components/search-bar";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Account } from "@/types/account";
-import { Plus } from "lucide-react";
+import { HandCoins, Plus } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { AccountItem } from "./account-item";
 import { CreateAccountForm } from "./create-account-form";
+import { CreateTransactionForm } from "./create-transaction-form";
 
 type AccountListProps = {
   accounts: Account[];
@@ -22,7 +23,7 @@ export function AccountList({ accounts }: AccountListProps) {
 
   return (
     <>
-      <div className="max-h-[480px] space-y-2 overflow-y-scroll md:max-h-[600px]">
+      <div className="max-h-[480px] space-y-2 overflow-y-scroll md:min-h-[560px]">
         <SearchBar value={query} onChange={setQuery} />
 
         {filteredAccounts.length > 0 ? (
@@ -43,6 +44,20 @@ export function AccountList({ accounts }: AccountListProps) {
           <DialogTitle className="text-center">Create a New Account</DialogTitle>
 
           <CreateAccountForm />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className="w-full">
+            <HandCoins /> Money Transfer
+          </Button>
+        </DialogTrigger>
+
+        <DialogContent>
+          <DialogTitle className="text-center">Make a Money Transfer</DialogTitle>
+
+          <CreateTransactionForm accounts={accounts} />
         </DialogContent>
       </Dialog>
     </>
