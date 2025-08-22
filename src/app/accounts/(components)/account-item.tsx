@@ -39,7 +39,7 @@ export function AccountItem({ account }: AccountItemProps) {
           <h2 className="text-lg font-semibold">Name: {account.name}</h2>
           <div className="space-x-1">
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button size="icon" variant="ghost" onClick={() => router.push(`/accounts/${account.id}/transactions`)}>
                   <ArrowLeftRight width={16} height={16} />
                 </Button>
@@ -49,17 +49,17 @@ export function AccountItem({ account }: AccountItemProps) {
             </Tooltip>
 
             <Dialog>
-              <DialogTrigger asChild>
-                <Tooltip>
-                  <TooltipTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
                     <Button size="icon" variant="ghost">
                       <PenLine width={16} height={16} />
                     </Button>
-                  </TooltipTrigger>
+                  </DialogTrigger>
+                </TooltipTrigger>
 
-                  <TooltipContent>Edit Account</TooltipContent>
-                </Tooltip>
-              </DialogTrigger>
+                <TooltipContent>Edit Account</TooltipContent>
+              </Tooltip>
 
               <DialogContent>
                 <DialogTitle className="text-center">Update Account</DialogTitle>
@@ -69,7 +69,7 @@ export function AccountItem({ account }: AccountItemProps) {
             </Dialog>
 
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Button size="icon" variant="ghost" onClick={handleDeleteAccount}>
                   {isPending ? <Loader2 className="animate-spin" /> : <Trash width={16} height={16} />}
                 </Button>
