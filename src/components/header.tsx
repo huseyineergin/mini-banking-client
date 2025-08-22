@@ -3,16 +3,17 @@
 import { logoutAction } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useAuthStore } from "@/store/useAuthStore";
 import { Loader2, Menu } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { ThemeToggler } from "./theme-toggler";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "./ui/navigation-menu";
-
-const navLinks = [{ href: "#", label: "Accounts" }];
+import { NavigationMenu } from "./ui/navigation-menu";
 
 export default function Header() {
+  const setUsername = useAuthStore((state) => state.setUsername);
+  const username = useAuthStore((state) => state.username);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -21,6 +22,7 @@ export default function Header() {
       e.preventDefault();
       await logoutAction();
       router.push("/login");
+      setUsername("");
     });
   }
 
@@ -38,15 +40,7 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <NavigationMenu className="hidden gap-2 md:flex" viewport={false}>
-          <NavigationMenuList className="gap-2">
-            {navLinks.map((navLink, index) => (
-              <NavigationMenuItem key={index}>
-                <NavigationMenuLink href={navLink.href} className="px-2 py-1.5 font-medium">
-                  {navLink.label}
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
+          <div>{username}</div>
 
           <ThemeToggler />
 
@@ -71,16 +65,6 @@ export default function Header() {
                 <div className="flex items-center justify-between p-2">
                   <SheetTitle>Menu</SheetTitle>
                   <ThemeToggler />
-                </div>
-
-                <div className="space-y-2">
-                  {navLinks.map((navLink, index) => (
-                    <div key={index}>
-                      <Link href={navLink.href!} className="block rounded px-2 py-1.5 font-medium">
-                        {navLink.label}
-                      </Link>
-                    </div>
-                  ))}
                 </div>
               </div>
 

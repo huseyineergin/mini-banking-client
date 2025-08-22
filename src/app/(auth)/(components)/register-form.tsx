@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +23,7 @@ const formSchema = z.object({
 });
 
 export function RegisterForm({ className, ...props }: React.ComponentProps<"div">) {
+  const setUsername = useAuthStore((state) => state.setUsername);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -38,6 +40,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
     startTransition(async () => {
       const res = await registerAction(values);
       if (res.success) {
+        setUsername(values.username);
         router.push("/accounts");
         form.reset();
       } else {
