@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Account } from "@/types/account";
 import { ArrowLeftRight, Banknote, Calendar, Hash, Loader2, PenLine, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -37,15 +38,27 @@ export function AccountItem({ account }: AccountItemProps) {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Name: {account.name}</h2>
           <div className="space-x-1">
-            <Button size="icon" variant="ghost" onClick={() => router.push(`/accounts/${account.id}/transactions`)}>
-              <ArrowLeftRight width={16} height={16} />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button size="icon" variant="ghost" onClick={() => router.push(`/accounts/${account.id}/transactions`)}>
+                  <ArrowLeftRight width={16} height={16} />
+                </Button>
+              </TooltipTrigger>
+
+              <TooltipContent>Transactions</TooltipContent>
+            </Tooltip>
 
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <PenLine width={16} height={16} />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button size="icon" variant="ghost">
+                      <PenLine width={16} height={16} />
+                    </Button>
+                  </TooltipTrigger>
+
+                  <TooltipContent>Edit Account</TooltipContent>
+                </Tooltip>
               </DialogTrigger>
 
               <DialogContent>
@@ -55,9 +68,15 @@ export function AccountItem({ account }: AccountItemProps) {
               </DialogContent>
             </Dialog>
 
-            <Button size="icon" variant="ghost" onClick={handleDeleteAccount}>
-              {isPending ? <Loader2 className="animate-spin" /> : <Trash width={16} height={16} />}
-            </Button>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button size="icon" variant="ghost" onClick={handleDeleteAccount}>
+                  {isPending ? <Loader2 className="animate-spin" /> : <Trash width={16} height={16} />}
+                </Button>
+              </TooltipTrigger>
+
+              <TooltipContent>Delete Account</TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
