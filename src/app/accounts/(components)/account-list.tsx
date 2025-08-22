@@ -21,14 +21,16 @@ export function AccountList({ accounts }: AccountListProps) {
   );
 
   return (
-    <div className="max-h-[480px] space-y-2 overflow-y-scroll md:max-h-[640px]">
-      <SearchBar value={query} onChange={setQuery} />
+    <>
+      <div className="max-h-[480px] space-y-2 overflow-y-scroll md:max-h-[600px]">
+        <SearchBar value={query} onChange={setQuery} />
 
-      {filteredAccounts.length > 0 ? (
-        filteredAccounts.map((account) => <AccountItem key={account.id} account={account} />)
-      ) : (
-        <p className="my-4 text-center text-sm">No accounts found.</p>
-      )}
+        {filteredAccounts.length > 0 ? (
+          filteredAccounts.map((account) => <AccountItem key={account.id} account={account} />)
+        ) : (
+          <p className="my-4 text-center text-sm">No accounts found.</p>
+        )}
+      </div>
 
       <Dialog>
         <DialogTrigger asChild>
@@ -43,6 +45,6 @@ export function AccountList({ accounts }: AccountListProps) {
           <CreateAccountForm />
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
