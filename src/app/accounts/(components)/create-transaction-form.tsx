@@ -22,6 +22,9 @@ const formSchema = z.object({
     .nonempty({ error: "Amount is required." })
     .refine((val) => !isNaN(Number(val)), {
       message: "Amount must be a valid number.",
+    })
+    .refine((val) => Number(val) > 0, {
+      message: "Amount cannot be less than 1.",
     }),
 });
 
